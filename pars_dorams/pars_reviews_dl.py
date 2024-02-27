@@ -103,7 +103,7 @@ def get_reviews_from_page(driver):
 
     try:
         reviews_tab = WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[data-type="comments"]'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[data-type="review"]'))
         )
         reviews_tab.click()
         time.sleep(10)
@@ -155,13 +155,13 @@ def process_dorama(driver, conn, cursor, dorama_url):
                 # Добавляем открытые отзывы
                 for review in reviews:
                     if review.strip():
-                        insert_query = "INSERT INTO dorama_comments_dl_open (dorama_id, comments_dl_open) VALUES (%s, %s);"
+                        insert_query = "INSERT INTO dorama_reviews_open (dorama_id, open_comments_text_dl) VALUES (%s, %s);"
                         cursor.execute(insert_query, (dorama_id, review.strip()))
 
                 # Добавляем скрытые отзывы
                 for hidden_review in hidden_reviews:
                     if hidden_review.strip():
-                        insert_query = "INSERT INTO dorama_comments_dl_hidden (dorama_id, comments_dl_hidden) VALUES (%s, %s);"
+                        insert_query = "INSERT INTO dorama_reviews_hidden (dorama_id, hidden_comment_text_dl) VALUES (%s, %s);"
                         cursor.execute(insert_query, (dorama_id, hidden_review.strip()))
 
                 # Коммит для каждой дорамы
@@ -197,7 +197,7 @@ cursor = conn.cursor()
 # Обработка всех страниц с дорамами
 
 
-for current_page in range(1,90):  # Установите максимальное значение страницы вместо 100
+for current_page in range(89,90):  # Установите максимальное значение страницы вместо 100
     try:
         print(f"Обрабатывается страница: {current_page}")
 
